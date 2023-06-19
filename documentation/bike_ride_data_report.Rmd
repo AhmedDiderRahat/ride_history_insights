@@ -1,0 +1,53 @@
+---
+title: "Insights of Bike Ride Data"
+author: "Rahat"
+date: "2023-06-18"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Preparations
+```{r}
+rm(list = ls(all.names = TRUE))
+```
+
+### Library Integration
+```{r library_import, message=FALSE, warning=FALSE, paged.print=FALSE}
+library("tidyverse")
+library("ggplot2")
+```
+
+
+### Data set loading
+```{r}
+df <- read.csv('../dataset/transformed_clean_data.csv')
+```
+
+### Calculate unique number of ride
+```{r}
+print(paste0('Total Number of unique ride id is: ', length(unique(ride_id))))
+```
+There were an estimated **5.66 M** rides conducted during the year 2022.
+
+
+### Summary of null counts
+```{r}
+null_counts <- sapply(df, function(x) sum(is.na(x)))
+
+print(null_counts)
+```
+There is no null values in the data set. All the variables are perfectly filled with data.
+
+
+### Visualize the month-wise counts
+```{r}
+month_tab <- table(format(as.Date(df$started_at), "%b")); month_tab
+barplot(table(format(as.Date(df$started_at), "%b")))
+```
+
+
+
