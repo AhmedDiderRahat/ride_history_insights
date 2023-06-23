@@ -10,10 +10,20 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+### Dataset
+```{r}
+[Google drive link of the data](https://drive.google.com/file/d/1lu9XjTNqO3ZD50sPJE7IMs8Iy8glDsdK/view?usp=sharing)
+```
+
+
+
 ### Preparations
 ```{r}
 rm(list = ls(all.names = TRUE))
 ```
+
+
 
 ### Library Integration
 ```{r library_import, message=FALSE, warning=FALSE, paged.print=FALSE}
@@ -24,30 +34,105 @@ library("ggplot2")
 
 ### Data set loading
 ```{r}
-df <- read.csv('../dataset/transformed_clean_data.csv')
+df <- read.csv('../dataset/original_bike_data.csv')
 ```
+
+
+### Attached all the variables in local environment
+```{r attached_warning, message=FALSE, warning=FALSE, paged.print=FALSE}
+attach(df)
+```
+
+
+### The columns of the dataset
+```{r}
+colnames(df)
+```
+
 
 ### Calculate unique number of ride
 ```{r}
-print(paste0('Total Number of unique ride id is: ', length(unique(ride_id))))
+total_data_point <- nrow(df)
+cat(paste0('Total Number of data point in the data set: ', total_data_point))
 ```
-There were an estimated **5.66 M** rides conducted during the year 2022.
+There were an estimated **5.67 M** rides conducted during the year 2022.
 
 
-### Summary of null counts
+### Ride start date
 ```{r}
-null_counts <- sapply(df, function(x) sum(is.na(x)))
-
-print(null_counts)
+cat(paste0('Lowest date: ', min(started_at), ' | Highest date: ', max(started_at)))
 ```
-There is no null values in the data set. All the variables are perfectly filled with data.
+All the ride conducted within 1st January 2022 to 31st December 2022
 
 
-### Visualize the month-wise counts
+### Null value checking
 ```{r}
-month_tab <- table(format(as.Date(df$started_at), "%b")); month_tab
-barplot(table(format(as.Date(df$started_at), "%b")))
+# get null Counts
+null_counts <- sapply(df, function(x) sum(is.na(x) | x == ""))
+cat(paste0('The summary of null values: \n'))
+null_counts
 ```
+The data set is pretty clean. But still has some of the null values in station information related columns. As we have a large amount of data. So, removing the rows that have null values in end_lat and end_lng columns.
+
+```{r}
+df <- na.omit(df)
+```
+
+After removing the null from end_lat, and end_lng columns I again check the null entries. 
+
+```{r}
+# get null Counts
+null_counts_new <- sapply(df, function(x) sum(is.na(x) | x == ""))
+cat(paste0('The summary of null values: \n'))
+null_counts_new
+```
+Now checking the number of rows in the new data frame. 
+
+
+```{r}
+new_row_counts <- nrow(df)
+
+reduction_rate <- (total_data_point - new_row_counts) * 100 / (total_data_point)
+cat(paste0('New data points: ', new_row_counts, ' | Reduce percentage: ', round(reduction_rate, 4), '%'))
+```
+So, after removing the null values only 0.1 % data have lost.
+
+Again attaching the columns
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+attach(df)
+```
+
+
+### Geting total number of ride
+```{r}
+cat(paste0('Total number of ride: ', length(unique(ride_id))))
+```
+Total number of ride conduct during 1st January to 31st December 2022 were **5661859**
+
+
+### Analysis ride time: 
+```{r}
+
+end_time <- as.POSIXct(ended_at)
+start_time <- as.POSIXct(started_at)
+
+
+trip_duration <- difftime(as.POSIXct(ended_at), as.POSIXct(started_at), units = "secs")
+
+
+t1 <- as.POSIXct(started_at[1000:1010])
+t2 <- as.POSIXct(ended_at[1000:1010])
+t3 <- trip_duration[1000:1010]
+
+t5 <- difftime(t2,t1, units = "secs")
+
+dt2 <- data.frame(t1, t2, t3, t5); dt2
+
+
+```
+
+
+
 
 
 
