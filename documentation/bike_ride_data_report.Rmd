@@ -12,17 +12,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ### Dataset
-```{r}
 [Google drive link of the data](https://drive.google.com/file/d/1lu9XjTNqO3ZD50sPJE7IMs8Iy8glDsdK/view?usp=sharing)
-```
-
 
 
 ### Preparations
 ```{r}
 rm(list = ls(all.names = TRUE))
 ```
-
 
 
 ### Library Integration
@@ -74,11 +70,12 @@ null_counts
 ```
 The data set is pretty clean. But still has some of the null values in station information related columns. As we have a large amount of data. So, removing the rows that have null values in end_lat and end_lng columns.
 
+
 ```{r}
 df <- na.omit(df)
 ```
-
 After removing the null from end_lat, and end_lng columns I again check the null entries. 
+
 
 ```{r}
 # get null Counts
@@ -97,6 +94,7 @@ cat(paste0('New data points: ', new_row_counts, ' | Reduce percentage: ', round(
 ```
 So, after removing the null values only 0.1 % data have lost.
 
+
 Again attaching the columns
 ```{r message=FALSE, warning=FALSE, paged.print=FALSE}
 attach(df)
@@ -112,26 +110,25 @@ Total number of ride conduct during 1st January to 31st December 2022 were **566
 
 ### Analysis ride time: 
 ```{r}
+# convert chat to datetime
+end_time <- as.POSIXct(ended_at, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
+start_time <- as.POSIXct(started_at, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
 
-end_time <- as.POSIXct(ended_at)
-start_time <- as.POSIXct(started_at)
+# calculate the difference in secs
+trip_duration <- difftime(end_time, start_time, units = "secs")
 
+# calculate sum of time differences
+td_sec <- sum(as.double(trip_duration))
 
-trip_duration <- difftime(as.POSIXct(ended_at), as.POSIXct(started_at), units = "secs")
+td_min <- td_sec %/% 60
+td_hr <- td_min %/% 60
 
+trip_time_sec <- td_sec %% 60
+trip_time_min <- td_min %% 60
 
-t1 <- as.POSIXct(started_at[1000:1010])
-t2 <- as.POSIXct(ended_at[1000:1010])
-t3 <- trip_duration[1000:1010]
-
-t5 <- difftime(t2,t1, units = "secs")
-
-dt2 <- data.frame(t1, t2, t3, t5); dt2
-
-
+cat(paste0('Total ride time: ', td_hr, " Hour: ", trip_time_min, " Min: ", trip_time_sec, " Sec."))
 ```
-
-
+Total ride duration is approximately **1,540,737** Hours
 
 
 
