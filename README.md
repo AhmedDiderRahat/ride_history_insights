@@ -4,10 +4,6 @@ author: "Rahat, A.D."
 date: "2023-06-18"
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 ### 1. Complete Case Study Report: [GitHub Link](https://github.com/AhmedDiderRahat/ride_history_insights/blob/main/documentation/GDA-CASE%20STUDY-1_%20CYCLISTIC%20BIKE-SHARE%20ANALYSIS.pdf)
 
 
